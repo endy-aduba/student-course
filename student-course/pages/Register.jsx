@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Button, FormControl, FormLabel, Input, Heading, VStack, useToast, Flex } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import Navbarbar from "Navbarbar";
+import Navbar from "./Navbarbar";
 
 
 const Register = () => {
@@ -11,7 +11,6 @@ const Register = () => {
     firstName: "",
     lastName: "",
     email: "",
-    program: "",
   });
 
   const navigate = useNavigate();
@@ -24,28 +23,37 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/students/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+				`${import.meta.env.VITE_API_URL}/api/students/register`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(formData),
+				}
+			);
 
       const data = await response.json();
+
+      console.log(data)
       if (response.ok) {
         toast({ title: "Registration successful!", status: "success", duration: 3000 });
         navigate("/");
       } else {
         toast({ title: "Error", description: data.error, status: "error", duration: 3000 });
       }
-    } catch (error) {
-      toast({ title: "Registration failed", status: "error", duration: 3000 });
+    } catch (e) {
+      toast({
+				title: `Registration failed ${e}`,
+				status: 'error',
+				duration: 3000,
+			});
     }
   };
 
   return (
     
     <Flex justify="center" align="center" height="100vh" bg="gray.100">
-    <Navbarbar/>
+    <Navbar />
       <Box bg="white" p={8} borderRadius="lg" boxShadow="lg" width="400px">
         <Heading textAlign="center" mb={6}>Sign Up</Heading>
         <form onSubmit={handleRegister}>
